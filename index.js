@@ -32,7 +32,9 @@ app.get("/api/users", (req, res) => {
 app.post("/api/users/:_id/exercises", (req, res) => {
   const _id = req.params._id
   
-  const schema = {description: req.body.description,duration: Number(req.body.duration),date: new Date(req.body.date).toDateString(),_id}
+  const schema = {description: req.body.description,duration: Number(req.body.duration),_id}
+  req.body.date === undefined ? (schema.date = new Date().toDateString()) : (schema.date = new Date(req.body.date).toDateString())
+  console.log(schema.date)
   users.forEach(user => {
     if (user._id === _id) {
       schema.username = user.username
