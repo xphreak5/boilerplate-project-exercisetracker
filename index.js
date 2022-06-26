@@ -15,6 +15,7 @@ app.get('/', (req, res) => {
 
 let users = []
 let exercises = []
+// let log = []
 
 
 app.post("/api/users", (req, res) => {
@@ -48,8 +49,8 @@ app.get("/api/users/:_id/logs", (req, res) => {
   users.forEach(user => {
     if (user._id == _id) {
       exercises.forEach(exercise => {
-        exerciseArray.push(exercise)
         if (exercise._id == user._id) {
+          exerciseArray.push(exercise)
           returnedJson.username = user.username,
           returnedJson.count = exerciseArray.length,
           returnedJson._id = user._id,
