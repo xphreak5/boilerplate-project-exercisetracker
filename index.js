@@ -15,7 +15,6 @@ app.get('/', (req, res) => {
 
 let users = []
 let exercises = []
-// let log = []
 
 
 app.post("/api/users", (req, res) => {
@@ -34,7 +33,6 @@ app.post("/api/users/:_id/exercises", (req, res) => {
   
   const schema = {description: req.body.description,duration: Number(req.body.duration),_id}
   req.body.date === undefined ? (schema.date = new Date().toDateString()) : (schema.date = new Date(req.body.date).toDateString())
-  console.log(schema.date)
   users.forEach(user => {
     if (user._id === _id) {
       schema.username = user.username
@@ -48,6 +46,11 @@ app.get("/api/users/:_id/logs", (req, res) => {
   const _id = req.params._id
   let returnedJson = {}
   let exerciseArray = []
+  const from = new Date(req.query.from).getTime()
+  const to = new Date(req.query.to).getTime()
+  const limit = Number(req.query.limit)
+
+
   users.forEach(user => {
     if (user._id == _id) {
       exercises.forEach(exercise => {
@@ -61,6 +64,21 @@ app.get("/api/users/:_id/logs", (req, res) => {
       })
     }
   })
+  
+
+  if (!isNaN(from) && !isNaN(to)) {
+    exerciseArray = returnedJson.log.filter(exercise => {
+      return from < new Date(exercise.date).getTime() && to > new Date(exercise.date).getTime()
+    })
+    returnedJson.log = exerciseArray
+  }
+  
+  if (!isNaN(limit)) {
+    limit == 1 ? (exerciseArray = [exerciseArray[0]]) : (exerciseArray = exerciseArray.slice(0, limit))
+    returnedJson.log = exerciseArray
+  }
+
+
   res.json(returnedJson)
   exerciseArray = []
 })
